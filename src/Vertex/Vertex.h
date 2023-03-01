@@ -11,6 +11,11 @@ class Vertex {
 public:
     Point p;
     Edge* incident;
+
+    Vertex(Point p) {
+        this->p = p;
+        incident = NULL;
+    }
 };
 
 #endif

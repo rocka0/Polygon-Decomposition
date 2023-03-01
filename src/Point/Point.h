@@ -1,5 +1,4 @@
 #include <iostream>
-using namespace std;
 
 #ifndef POINT_H
 #define POINT_H

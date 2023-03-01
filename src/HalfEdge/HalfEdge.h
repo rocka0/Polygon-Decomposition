@@ -16,6 +16,14 @@ public:
     Face* right;    // not left beacuse CW orientation
     Edge* next;     // in CW order
     Edge* prev;     // in CW order
+
+    Edge() {
+        twin = NULL;
+        origin = NULL;
+        right = NULL;
+        next = NULL;
+        prev = NULL;
+    }
 };
 
 #endif

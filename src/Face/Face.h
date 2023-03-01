@@ -4,16 +4,20 @@
 #include "../HalfEdge/HalfEdge.h"
 #include "../Vertex/Vertex.h"
 
+using namespace std;
+
 #ifndef FACE_H
 #define FACE_H
 
 class Face {
 public:
     Edge* incident;
-
-    Face* create_face(vector<Point> v);
-    void split_face(Face* f, Vertex* end);
     vector<Vertex*> get_vertices(Face* f);
+
+    Face(Edge* e) {
+        e->right = this;
+        incident = e;
+    }
 };
 
 #endif
