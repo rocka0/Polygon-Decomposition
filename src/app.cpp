@@ -2,7 +2,6 @@
 #include <iostream>
 
 #include "boundingbox/boundingbox.hpp"
-#include "debugging/print.hpp"
 #include "pointset/pointset.hpp"
 
 using namespace std;
@@ -131,11 +130,17 @@ int main() {
         input.addVertex(p);
     }
 
-    list<polygon> DCEL;
+    list<polygon> decomposition;
 
     while (input.size() > 2) {
-        DCEL.push_back(decompose(input));
-        cout << "Decomposition: " << DCEL.size() << " -> ";
-        print(DCEL.back());
+        decomposition.push_back(decompose(input));
+    }
+
+    cout << decomposition.size() << endl;
+    for (auto &p : decomposition) {
+        cout << p.size() << endl;
+        for (auto it = p.begin(); it != p.end(); ++it) {
+            cout << it->x << ' ' << it->y << endl;
+        }
     }
 }
