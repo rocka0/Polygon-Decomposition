@@ -1,5 +1,5 @@
-#ifndef _POINT_SET_H
-#define _POINT_SET_H
+#ifndef _POINTSET_H
+#define _POINTSET_H
 
 #include <set>
 
@@ -30,10 +30,6 @@ public:
         }
 
         for (auto &v : L) points.erase(v);
-    }
-
-    void insert(typename Polygon<T>::vptr v) {
-        points.insert(v);
     }
 
     void erase(typename Polygon<T>::vptr v) {

@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "boundingbox/boundingbox.hpp"
+#include "debugging/print.hpp"
 #include "pointset/pointset.hpp"
 
 using namespace std;
@@ -12,34 +13,6 @@ typedef Polygon<ptype> polygon;
 typedef polygon::vptr vptr;
 typedef BoundingBox<ptype> boundingbox;
 typedef PointSet<ptype> pointset;
-
-void print(point &p) {
-    cout << "(" << p.x << ',' << p.y << ')';
-}
-
-void print(polygon &p) {
-    for (vptr it = p.begin(); it != p.end(); ++it) {
-        print(*it);
-        cout << " -> ";
-    }
-    print(*p.begin());
-    cout << endl;
-}
-
-void print(list<vptr> &l) {
-    for (auto &v : l) {
-        print(*v);
-        cout << " -> ";
-    }
-    cout << endl;
-}
-
-void print(pointset &ps) {
-    for (auto it = ps.begin(); it != ps.end(); ++it) {
-        print(**it);
-        cout << endl;
-    }
-}
 
 bool insideL(list<vptr> &L, vptr x) {
     for (auto it = L.begin(); it != L.end(); ++it) {
@@ -160,9 +133,9 @@ int main() {
 
     list<polygon> DCEL;
 
-    do {
+    while (input.size() > 2) {
         DCEL.push_back(decompose(input));
         cout << "Decomposition: " << DCEL.size() << " -> ";
         print(DCEL.back());
-    } while (input.size() > 2);
+    }
 }
