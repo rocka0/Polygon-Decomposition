@@ -85,7 +85,7 @@ def orientation(p1, p2, p3):
     return a[0] * b[1] - b[0] * a[1]
 
 
-def genPolygonFromPoint(points):
+def polygonFromPoints(points):
     """
     Returns a simple polygon from a collection of points
         Parameters:
@@ -116,24 +116,18 @@ def genPolygonFromPoint(points):
 
 
 def main():
-    n = getInt(1, 50)
+    n = getInt(3, 100)
 
     points = []
 
     for _ in range(n):
-        x, y = getPair(1, 500)
+        x, y = getPair(1, 5000)
         points.append((x, y))
 
-    polygon = genPolygonFromPoint(points)
+    polygon = polygonFromPoints(points)
 
-    with open("input.txt", "w") as file:
-        file.write(str(n) + "\n")
-        file.write("\n".join([f"{x[0]} {x[1]}" for x in polygon]))
-
-    with open("inputDesmos.txt", "w") as file:
-        for vertex in polygon:
-            file.write(f"{vertex[0]}, {vertex[1]}\n")
-        file.write(f"{polygon[0][0]}, {polygon[0][1]}")
+    print(str(n))
+    print("\n".join([f"{x[0]} {x[1]}" for x in polygon]))
 
     return 0
 
