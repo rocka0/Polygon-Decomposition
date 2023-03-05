@@ -116,12 +116,12 @@ def polygonFromPoints(points):
 
 
 def main():
-    n = getInt(3, 100)
+    n = getInt(3, 50)
 
     points = []
 
     for _ in range(n):
-        x, y = getPair(1, 5000)
+        x, y = getPair(-2000, 2000)
         points.append((x, y))
 
     polygon = polygonFromPoints(points)

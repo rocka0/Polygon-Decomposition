@@ -36,7 +36,7 @@ plt.clf()
 colors = [
     "blueviolet",
     "dodgerblue",
-    "cyan",
+    "darkkhaki",
     "lightcoral",
     "hotpink",
     "lawngreen",
@@ -45,7 +45,7 @@ colors = [
     "green",
     "saddlebrown",
 ]
-# colors = ['blueviolet', 'dodgerblue']
+
 l = len(colors)
 
 try:
