@@ -40,7 +40,7 @@ with console.status("[bold red]Generating input.txt") as status:
     system("python3 scripts/gen.py > input.txt")
     console.log("[bold blue]Input written to [italic]input.txt")
 
-if Confirm.ask("[bold red]Generate desmos version of input.txt?", default=False):
+if Confirm.ask("[bold green4]Generate desmos version of input.txt?", default=False):
     with console.status("[bold red]Generating input.txt") as status:
         inputToDesmos()
         console.log("[bold green]Desmos data written to [italic]desmosInput.txt")
@@ -53,10 +53,16 @@ with console.status("[bold red]Running ./app on input.txt", spinner="circle") as
     system("./app < input.txt > output.txt")
     console.log("[bold orange1]Output written to [italic]output.txt")
 
-if Confirm.ask("[bold red]Generate desmos version of output.txt?", default=False):
+if Confirm.ask("[bold green4]Generate desmos version of output.txt?", default=False):
     with console.status("[bold red]Generating output.txt") as status:
         outputToDesmos()
         console.log("[bold green]Desmos data written to [italic]desmosOutput.txt")
+
+with console.status("[bold red]Generating plots", spinner="triangle") as status:
+    system("python3 scripts/plot.py")
+    console.log(
+        "[bold light_pink1]Plots generated into [italic]polygon.png and decompositions.png"
+    )
 
 with console.status(
     "[bold red]Cleaning up executable", spinner="bouncingBall"
