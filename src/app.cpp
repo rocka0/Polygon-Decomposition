@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "boundingbox/boundingbox.hpp"
+#include "debugging/print.hpp"
 #include "diagonal/diagonal.hpp"
 #include "pointset/pointset.hpp"
 
@@ -155,6 +156,27 @@ void buildLLE(polygon &P, vector<polygon> &decomposition, map<diagonal, pair<int
     }
 }
 
+struct LP_CMP {
+    bool operator()(const vptr a, const vptr b) const {
+        return *a < *b;
+    }
+};
+
+void buildLP(map<diagonal, pair<int, int>> &LLE, map<vptr, vector<pair<int, vptr>>, LP_CMP> &LP) {
+    for (auto &[diag, faces] : LLE) {
+        LP[diag.u].push_back({faces.first, diag.v});
+        LP[diag.u].push_back({faces.second, diag.v});
+        LP[diag.v].push_back({faces.first, diag.u});
+        LP[diag.v].push_back({faces.second, diag.u});
+    }
+}
+
+bool canEraseDiagonal(diagonal d, polygon &P, map<vptr, vector<pair<int, vptr>>, LP_CMP> &LP) {
+    bool uIsGood = !P.notch(d.u) or LP[d.u].size() > 2;
+    bool vIsGood = !P.notch(d.v) or LP[d.v].size() > 2;
+    return uIsGood and vIsGood;
+}
+
 int main() {
     cout << fixed << setprecision(14);
 
@@ -184,4 +206,7 @@ int main() {
 
     map<diagonal, pair<int, int>> LLE;
     buildLLE(input, decomposition, LLE);
+
+    map<vptr, vector<pair<int, vptr>>, LP_CMP> LP;
+    buildLP(LLE, LP);
 }
