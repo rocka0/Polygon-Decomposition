@@ -15,11 +15,11 @@ public:
     vector<Edge*> edges;
     vector<Face*> faces;
 
-   // Edge* addEdge(Vertex*, Vertex*);
-    //Edge* addEdge(Edge*, Edge*);
+    // Edge* addEdge(Vertex*, Vertex*);
+    // Edge* addEdge(Edge*, Edge*);
     Edge* addEdgeToFace(Edge*, Vertex*);
     Face* createFace(vector<Point>);
-    Face* split_face(Face*, Vertex*);
+    Face* splitFace(Face*, Vertex*, Vertex*);
 
     Vertex* createVertex(Point p) {
         Vertex* v = new Vertex(p);

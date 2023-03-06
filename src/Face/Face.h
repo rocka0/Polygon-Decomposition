@@ -17,6 +17,16 @@ public:
     Face(Edge* e) {
         e->right = this;
         incident = e;
+        setFace();
+    }
+
+    void setFace() {
+        Edge* edge = incident->next;
+
+        while (edge != incident) {
+            edge->right = this;
+            edge = edge->next;
+        }
     }
 };
 

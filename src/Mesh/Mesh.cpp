@@ -53,13 +53,38 @@ Face* Mesh::createFace(vector<Point> p) {
     start->twin->prev = close->twin;
 
     Face* f = new Face(start);
-    e = f->incident;
-
-    for (int i = 0; i < n; i++) {
-        e->right = f;
-        e = e->next;
-    }
-
     faces.push_back(f);
     return f;
+}
+
+Face* Mesh::splitFace(Face* f, Vertex* v1, Vertex* v2) {
+    Edge* e = f->incident;
+    Edge *e1, *e2;
+
+    while (true) {
+        if (e->origin == v1) e1 = e->prev;
+
+        if (e->origin == v2) e2 = e;
+
+        e = e->next;
+
+        if (e == f->incident) break;
+    }
+
+    Edge* edge = createEdge(v1, v2);
+
+    edge->next = e2;
+    e2->prev->next = edge->twin;
+    edge->twin->prev = e2->prev;
+    e2->prev = edge;
+    edge->twin->next = e1->next;
+    e1->next->prev = edge->twin;
+    e1->next = edge;
+    edge->prev = e1;
+
+    edge->right = f;
+
+    Face* face = new Face(edge->twin);
+    faces.push_back(face);
+    return face;
 }
