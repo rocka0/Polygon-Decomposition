@@ -1,7 +1,11 @@
 #include <cassert>
+#include <iomanip>
 #include <iostream>
+#include <map>
+#include <vector>
 
 #include "boundingbox/boundingbox.hpp"
+#include "diagonal/diagonal.hpp"
 #include "pointset/pointset.hpp"
 
 using namespace std;
@@ -12,6 +16,7 @@ typedef Polygon<ptype> polygon;
 typedef polygon::vptr vptr;
 typedef BoundingBox<ptype> boundingbox;
 typedef PointSet<ptype> pointset;
+typedef Diagonal<ptype> diagonal;
 
 bool insideL(list<vptr> &L, vptr x) {
     for (auto it = L.begin(); it != L.end(); ++it) {
@@ -119,23 +124,55 @@ polygon decompose(polygon &P) {
     return decomposition;
 }
 
+/*
+Second half begins
+*/
+
+bool belongsToPolygon(diagonal d, polygon &P) {
+    for (auto it = P.begin(); it != P.end(); ++it) {
+        diagonal edge{it, P.nextVertex(it)};
+        if (d == edge) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void buildLLE(polygon &P, vector<polygon> &decomposition, map<diagonal, pair<int, int>> &LLE) {
+    for (int i = 0; i < (int) decomposition.size(); ++i) {
+        for (auto it = decomposition[i].begin(); it != decomposition[i].end(); ++it) {
+            diagonal edge{it, decomposition[i].nextVertex(it)};
+            if (!belongsToPolygon(edge, P)) {
+                if (LLE.count(edge)) {
+                    // second occurence of edge in LLE, update left face
+                    LLE[edge].second = i;
+                } else {
+                    // first occurence of edge in LLE, update righ face
+                    LLE[edge].first = i;
+                }
+            }
+        }
+    }
+}
+
 int main() {
+    cout << fixed << setprecision(14);
+
     int n;
     cin >> n;
 
-    polygon input;
+    polygon input, inputCopy;
     for (int i = 0; i < n; ++i) {
         point p;
         cin >> p.x >> p.y;
         input.addVertex(p);
     }
+    inputCopy = input;
 
-    list<polygon> decomposition;
-
+    vector<polygon> decomposition;
     while (input.size() > 2) {
         decomposition.push_back(decompose(input));
     }
-
     cout << decomposition.size() << endl;
     for (auto &p : decomposition) {
         cout << p.size() << endl;
@@ -143,4 +180,8 @@ int main() {
             cout << it->x << ' ' << it->y << endl;
         }
     }
+    input = move(inputCopy);
+
+    map<diagonal, pair<int, int>> LLE;
+    buildLLE(input, decomposition, LLE);
 }

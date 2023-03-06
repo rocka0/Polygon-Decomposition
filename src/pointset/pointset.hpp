@@ -9,13 +9,7 @@ template <typename T>
 class PointSet {
     struct VertexPointerCmp {
         bool operator()(typename Polygon<T>::vptr a, typename Polygon<T>::vptr b) const {
-            if (a->x < b->x) {
-                return true;
-            } else if (a->x > b->x) {
-                return false;
-            } else {
-                return a->y < b->y;
-            }
+            return *a < *b;
         }
     };
 
