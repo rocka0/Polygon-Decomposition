@@ -25,6 +25,14 @@ public:
         vertices.erase(v);
     }
 
+    vptr find(Point<T> &p) {
+        vptr it = vertices.begin();
+        while (it != vertices.end()) {
+            if (*it == p) return it;
+        }
+        return it;
+    }
+
     vptr begin() {
         return vertices.begin();
     }

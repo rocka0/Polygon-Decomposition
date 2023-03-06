@@ -4,17 +4,18 @@
 #include <iostream>
 #include <list>
 
+#include "../diagonal/diagonal.hpp"
 #include "../point/point.hpp"
 #include "../pointset/pointset.hpp"
 #include "../polygon/polygon.hpp"
 
 template <typename T>
-void print(Point<T> &p) {
+void print(Point<T> p) {
     std::cout << "(" << p.x << ',' << p.y << ')';
 }
 
 template <typename T>
-void print(Polygon<T> &p) {
+void print(Polygon<T> p) {
     for (typename Polygon<T>::vptr it = p.begin(); it != p.end(); ++it) {
         print(*it);
         std::cout << " -> ";
@@ -24,7 +25,7 @@ void print(Polygon<T> &p) {
 }
 
 template <typename T>
-void print(std::list<typename Polygon<T>::vptr> &l) {
+void print(std::list<typename Polygon<T>::vptr> l) {
     for (auto &v : l) {
         print(*v);
         std::cout << " -> ";
@@ -33,11 +34,20 @@ void print(std::list<typename Polygon<T>::vptr> &l) {
 }
 
 template <typename T>
-void print(PointSet<T> &ps) {
+void print(PointSet<T> ps) {
     for (auto it = ps.begin(); it != ps.end(); ++it) {
         print(**it);
         std::cout << std::endl;
     }
+}
+
+template <typename T>
+void print(Diagonal<T> d) {
+    std::cout << "Diagonal: ";
+    print(d.u);
+    std::cout << " -> ";
+    print(d.v);
+    std::cout << std::endl;
 }
 
 #endif

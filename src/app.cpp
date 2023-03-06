@@ -131,7 +131,7 @@ Second half begins
 
 bool belongsToPolygon(diagonal d, polygon &P) {
     for (auto it = P.begin(); it != P.end(); ++it) {
-        diagonal edge{it, P.nextVertex(it)};
+        diagonal edge{*it, *P.nextVertex(it)};
         if (d == edge) {
             return true;
         }
@@ -142,7 +142,7 @@ bool belongsToPolygon(diagonal d, polygon &P) {
 void buildLLE(polygon &P, vector<polygon> &decomposition, map<diagonal, pair<int, int>> &LLE) {
     for (int i = 0; i < (int) decomposition.size(); ++i) {
         for (auto it = decomposition[i].begin(); it != decomposition[i].end(); ++it) {
-            diagonal edge{it, decomposition[i].nextVertex(it)};
+            diagonal edge{*it, *decomposition[i].nextVertex(it)};
             if (!belongsToPolygon(edge, P)) {
                 if (LLE.count(edge)) {
                     // second occurence of edge in LLE, update left face
@@ -157,24 +157,18 @@ void buildLLE(polygon &P, vector<polygon> &decomposition, map<diagonal, pair<int
 }
 
 struct LP_CMP {
-    bool operator()(const vptr a, const vptr b) const {
-        return *a < *b;
+    bool operator()(const point a, const point b) const {
+        return a < b;
     }
 };
 
-void buildLP(map<diagonal, pair<int, int>> &LLE, map<vptr, vector<pair<int, vptr>>, LP_CMP> &LP) {
+void buildLP(map<diagonal, pair<int, int>> &LLE, map<point, vector<pair<int, point>>, LP_CMP> &LP) {
     for (auto &[diag, faces] : LLE) {
         LP[diag.u].push_back({faces.first, diag.v});
         LP[diag.u].push_back({faces.second, diag.v});
         LP[diag.v].push_back({faces.first, diag.u});
         LP[diag.v].push_back({faces.second, diag.u});
     }
-}
-
-bool canEraseDiagonal(diagonal d, polygon &P, map<vptr, vector<pair<int, vptr>>, LP_CMP> &LP) {
-    bool uIsGood = !P.notch(d.u) or LP[d.u].size() > 2;
-    bool vIsGood = !P.notch(d.v) or LP[d.v].size() > 2;
-    return uIsGood and vIsGood;
 }
 
 int main() {
@@ -207,6 +201,6 @@ int main() {
     map<diagonal, pair<int, int>> LLE;
     buildLLE(input, decomposition, LLE);
 
-    map<vptr, vector<pair<int, vptr>>, LP_CMP> LP;
+    map<point, vector<pair<int, point>>, LP_CMP> LP;
     buildLP(LLE, LP);
 }
