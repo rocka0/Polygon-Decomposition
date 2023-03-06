@@ -1,13 +1,18 @@
+#include <algorithm>
 #include <cassert>
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <string>
 #include <vector>
 
 #include "boundingbox/boundingbox.hpp"
 #include "debugging/print.hpp"
 #include "diagonal/diagonal.hpp"
+#include "dsu/dsu.hpp"
 #include "pointset/pointset.hpp"
+#include "utils/orientation.hpp"
 
 using namespace std;
 
@@ -171,6 +176,93 @@ void buildLP(map<diagonal, pair<int, int>> &LLE, map<point, vector<pair<int, poi
     }
 }
 
+bool canRemoveDiagonal(diagonal d, map<point, vector<pair<int, point>>, LP_CMP> &LP, polygon &P, map<diagonal, pair<int, int>> &LLE, vector<polygon> &decomposition, DSU &unionFind) {
+    point u = d.u;
+    point v = d.v;
+    vptr uinP = P.find(u);
+    vptr vinP = P.find(v);
+
+    bool c1 = LP[u].size() > 2 and LP[v].size() > 2;
+    bool c2 = LP[u].size() > 2 and !P.notch(vinP);
+    bool c3 = LP[v].size() > 2 and !P.notch(uinP);
+    bool c4 = !P.notch(uinP) and !P.notch(vinP);
+
+    if (c1 or c2 or c3 or c4) {
+        pair<int, int> faces = LLE[d];
+        int LF = unionFind.leader(faces.first);
+        int RF = unionFind.leader(faces.second);
+
+        vptr uinRF, uinLF, vinRF, vinLF;
+        uinRF = decomposition[RF].find(u);
+        if (*decomposition[RF].nextVertex(uinRF) != v) {
+            swap(LF, RF);
+        }
+        LLE[d] = {LF, RF};
+        uinRF = decomposition[RF].find(u);
+        uinLF = decomposition[LF].find(u);
+        vinRF = decomposition[RF].find(v);
+        vinLF = decomposition[LF].find(v);
+
+        point prevU = *decomposition[RF].previousVertex(uinRF);
+        point succU = *decomposition[LF].nextVertex(uinLF);
+        point prevV = *decomposition[LF].previousVertex(vinLF);
+        point succV = *decomposition[RF].nextVertex(vinRF);
+
+        return getOrientation(prevU, u, succU) == RIGHT_TURN and getOrientation(prevV, v, succV) == RIGHT_TURN;
+    } else {
+        return false;
+    }
+}
+
+void merge(diagonal d, map<diagonal, pair<int, int>> &LLE, vector<polygon> &decomposition, DSU &unionFind) {
+    pair<int, int> faces = LLE[d];
+    int LF = unionFind.leader(faces.first);
+    int RF = unionFind.leader(faces.second);
+
+    vptr uinLF, vinRF;
+    uinLF = decomposition[LF].find(d.u);
+    vinRF = decomposition[RF].find(d.v);
+
+    polygon merged;
+    vptr vp = uinLF;
+    while (*vp != d.v) {
+        merged.addVertex(*vp);
+        vp = decomposition[LF].nextVertex(vp);
+    }
+    vp = vinRF;
+    while (*vp != d.u) {
+        merged.addVertex(*vp);
+        vp = decomposition[RF].nextVertex(vp);
+    }
+
+    unionFind.merge(LF, RF);
+    if (unionFind.leader(LF) == LF) {
+        decomposition[LF] = merged;
+    } else {
+        decomposition[RF] = merged;
+    }
+}
+
+void mergePolygons(map<point, vector<pair<int, point>>, LP_CMP> &LP, polygon &P, map<diagonal, pair<int, int>> &LLE, vector<polygon> &decomposition, DSU &unionFind) {
+    for (auto &[diag, _] : LLE) {
+        if (canRemoveDiagonal(diag, LP, P, LLE, decomposition, unionFind)) {
+            merge(diag, LLE, decomposition, unionFind);
+        }
+    }
+}
+
+void outputDecomposition(vector<polygon> &decomposition, string fileName) {
+    ofstream outputFile(fileName);
+    outputFile << decomposition.size() << endl;
+    for (auto &p : decomposition) {
+        outputFile << p.size() << endl;
+        for (auto it = p.begin(); it != p.end(); ++it) {
+            outputFile << it->x << ' ' << it->y << endl;
+        }
+    }
+    outputFile.close();
+}
+
 int main() {
     cout << fixed << setprecision(14);
 
@@ -189,13 +281,7 @@ int main() {
     while (input.size() > 2) {
         decomposition.push_back(decompose(input));
     }
-    cout << decomposition.size() << endl;
-    for (auto &p : decomposition) {
-        cout << p.size() << endl;
-        for (auto it = p.begin(); it != p.end(); ++it) {
-            cout << it->x << ' ' << it->y << endl;
-        }
-    }
+    outputDecomposition(decomposition, "before.txt");
     input = move(inputCopy);
 
     map<diagonal, pair<int, int>> LLE;
@@ -203,4 +289,17 @@ int main() {
 
     map<point, vector<pair<int, point>>, LP_CMP> LP;
     buildLP(LLE, LP);
+
+    DSU unionFind(decomposition.size());
+
+    mergePolygons(LP, input, LLE, decomposition, unionFind);
+
+    vector<polygon> finalDecomposition;
+    finalDecomposition.reserve(decomposition.size());
+    for (int i = 0; i < (int) decomposition.size(); ++i) {
+        if (unionFind.leader(i) == i) {
+            finalDecomposition.push_back(decomposition[i]);
+        }
+    }
+    outputDecomposition(finalDecomposition, "after.txt");
 }

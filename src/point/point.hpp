@@ -15,6 +15,10 @@ public:
         return x == other.x and y == other.y;
     }
 
+    bool operator!=(const Point<T>& other) const {
+        return !operator==(other);
+    }
+
     bool operator<(const Point<T>& other) const {
         return (x < other.x) or ((x == other.x) and (y < other.y));
     }

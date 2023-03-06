@@ -29,6 +29,7 @@ public:
         vptr it = vertices.begin();
         while (it != vertices.end()) {
             if (*it == p) return it;
+            ++it;
         }
         return it;
     }
