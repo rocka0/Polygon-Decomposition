@@ -12,8 +12,8 @@ public:
     Point p;
     Edge* incident;
 
-    Vertex(Point p) {
-        this->p = p;
+    Vertex(Point x) {
+        p = x;
         incident = NULL;
     }
 };
