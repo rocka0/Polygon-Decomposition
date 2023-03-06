@@ -1,5 +1,7 @@
 #include <iostream>
+#include <map>
 #include <vector>
+
 using namespace std;
 
 #include "../Face/Face.h"
@@ -14,16 +16,19 @@ public:
     vector<Vertex*> vertices;
     vector<Edge*> edges;
     vector<Face*> faces;
+    map<Point, int> lookup;
 
     Edge* addEdgeToFace(Edge*, Vertex*);
     Face* createFace(vector<Point>);
     Face* splitFace(Face*, Vertex*, Vertex*);
     Vertex* createVertex(Point);
     Edge* createEdge(Vertex*, Vertex*);
+    void decomposePolygon(vector<pair<Point, Point>>);
 };
 
 Vertex* Mesh::createVertex(Point p) {
     Vertex* v = new Vertex(p);
+    lookup[p] = vertices.size();
     vertices.push_back(v);
     return v;
 }
@@ -106,6 +111,16 @@ Face* Mesh::splitFace(Face* f, Vertex* v1, Vertex* v2) {
     Face* face = new Face(edge->twin);
     faces.push_back(face);
     return face;
+}
+
+void Mesh::decomposePolygon(vector<pair<Point, Point>> v) {
+    Face* face = faces[0];
+
+    for (auto p : v) {
+        Vertex* v1 = vertices[lookup[p.first]];
+        Vertex* v2 = vertices[lookup[p.second]];
+        face = splitFace(face, v1, v2);
+    }
 }
 
 #endif
