@@ -48,40 +48,40 @@ colors = [
 
 l = len(colors)
 
-try:
-    f = open("./output.txt", "r")
+def makePlot(fileName):
+    name = fileName.split(".")[0].title()
+    with open(fileName, "r") as f:
+        # Clear the figure
+        plt.clf()
+        # number of decompositions
+        m = int(f.readline())
+        for i in range(m):
+            # i_th decomposition
+            m_i = int(f.readline())
 
-    # number of decompositions
-    m = int(f.readline())
-    for i in range(m):
-        # i_th decomposition
-        m_i = int(f.readline())
+            x_i = []
+            y_i = []
 
-        x_i = []
-        y_i = []
+            # read the coordinates
+            for j in range(m_i):
+                line = f.readline().split()
+                x_i.append(float(line[0]))
+                y_i.append(float(line[1]))
+            x_i.append(x_i[0])
+            y_i.append(y_i[0])
 
-        # read the coordinates
-        for j in range(m_i):
-            line = f.readline().split()
-            x_i.append(float(line[0]))
-            y_i.append(float(line[1]))
-        x_i.append(x_i[0])
-        y_i.append(y_i[0])
+            plt.fill(x_i, y_i, color=colors[i % l], alpha=0.5)
+            plt.plot(x_i, y_i, color=colors[i % l], linewidth=2)
 
-        plt.fill(x_i, y_i, color=colors[i % l], alpha=0.5)
-        plt.plot(x_i, y_i, color=colors[i % l], linewidth=2)
+        plt.scatter(x, y, color="red", marker=".", zorder=m)
+        plt.title(f"{name} Merging: {m} Polygons")
+        plt.xlabel("X-axis")
+        plt.ylabel("Y-axis")
+        plt.grid(color="gray", linestyle="--", linewidth=0.5)
+        plt.savefig(f"{name}.png", dpi=300)
 
-    f.close()
-
-    plt.scatter(x, y, color="red", marker=".", zorder=m)
-    plt.title("Decompositions")
-    plt.xlabel("X-axis")
-    plt.ylabel("Y-axis")
-    plt.grid(color="gray", linestyle="--", linewidth=0.5)
-    plt.savefig("decompositions.png", dpi=300)
-
-except FileNotFoundError:
-    print("Output file name should be output.txt")
+makePlot("before.txt")
+makePlot("after.txt")
 
 # plt.scatter(x, y, color='red', marker='x')
 # fig.savefig('decompositions.png', dpi=300)
