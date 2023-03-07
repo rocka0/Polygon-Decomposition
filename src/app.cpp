@@ -253,6 +253,7 @@ void mergePolygons(map<point, vector<pair<int, point>>, LP_CMP> &LP, polygon &P,
 
 void outputDecomposition(vector<polygon> &decomposition, string fileName) {
     ofstream outputFile(fileName);
+    outputFile << fixed << setprecision(14);
     outputFile << decomposition.size() << endl;
     for (auto &p : decomposition) {
         outputFile << p.size() << endl;
@@ -272,8 +273,6 @@ void extractFinalDiagonals(map<diagonal, pair<int, int>> &LLE, DSU &unionFind, v
 }
 
 int main() {
-    cout << fixed << setprecision(14);
-
     int n;
     cin >> n;
 
