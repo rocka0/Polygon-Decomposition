@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../Point/Point.h"
+#include "../Point/Point.hpp"
 
 #ifndef VERTEX_H
 #define VERTEX_H
@@ -11,10 +11,12 @@ class Vertex {
 public:
     Point p;
     Edge* incident;
+    int id;
 
     Vertex(Point x) {
         p = x;
         incident = NULL;
+        id = -1;
     }
 };
 

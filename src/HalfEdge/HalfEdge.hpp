@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../Vertex/Vertex.h"
+#include "../Vertex/Vertex.hpp"
 
 #ifndef HALFEDGE_H
 #define HALFEDGE_H

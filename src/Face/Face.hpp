@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
 
-#include "../HalfEdge/HalfEdge.h"
-#include "../Vertex/Vertex.h"
+#include "../HalfEdge/HalfEdge.hpp"
+#include "../Vertex/Vertex.hpp"
 
 using namespace std;
 
@@ -12,11 +12,13 @@ using namespace std;
 class Face {
 public:
     Edge* incident;
+    int id;
 
     Face(Edge* e) {
         e->right = this;
         incident = e;
         setFace();
+        id = -1;
     }
 
     void setFace() {
