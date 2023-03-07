@@ -263,6 +263,14 @@ void outputDecomposition(vector<polygon> &decomposition, string fileName) {
     outputFile.close();
 }
 
+void extractFinalDiagonals(map<diagonal, pair<int, int>> &LLE, DSU &unionFind, vector<diagonal> &finalDiagonals) {
+    for (auto &[diag, faces] : LLE) {
+        if (unionFind.leader(faces.first) != unionFind.leader(faces.second)) {
+            finalDiagonals.push_back(diag);
+        }
+    }
+}
+
 int main() {
     cout << fixed << setprecision(14);
 
@@ -302,4 +310,7 @@ int main() {
         }
     }
     outputDecomposition(finalDecomposition, "after.txt");
+
+    vector<diagonal> finalDiagonals;
+    extractFinalDiagonals(LLE, unionFind, finalDiagonals);
 }
