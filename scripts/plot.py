@@ -48,6 +48,7 @@ colors = [
 
 l = len(colors)
 
+
 def makePlot(fileName):
     name = fileName.split(".")[0].title()
     with open(fileName, "r") as f:
@@ -79,6 +80,7 @@ def makePlot(fileName):
         plt.ylabel("Y-axis")
         plt.grid(color="gray", linestyle="--", linewidth=0.5)
         plt.savefig(f"{name}.png", dpi=300)
+
 
 makePlot("before.txt")
 makePlot("after.txt")
