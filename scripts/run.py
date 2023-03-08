@@ -12,7 +12,7 @@ with console.status("[bold red]Compiling app.cpp", spinner="arc") as status:
     console.log("[bold yellow]src/app.c compiled to [italic]./app")
 
 with console.status("[bold red]Running ./app on input.txt", spinner="circle") as status:
-    system("./app < input.txt > output.txt")
+    system("./app < input.txt")
     console.log("[bold orange1]Output written to [italic]output.txt")
 
 with console.status("[bold red]Generating plots", spinner="triangle") as status:

@@ -40,9 +40,9 @@ Edge<T>* Mesh<T>::createEdge(Vertex<T>* v1, Vertex<T>* v2) {
     e1->origin = v1;
     e2->origin = v2;
 
-    if ((v1->incident) == NULL) v1->incident = e1;
+    if ((v1->incident) == nullptr) v1->incident = e1;
 
-    if ((v2->incident) == NULL) v2->incident = e2;
+    if ((v2->incident) == nullptr) v2->incident = e2;
 
     e1->twin = e2;
     e2->twin = e1;
@@ -99,7 +99,6 @@ std::vector<int> Mesh<T>::incidentFaces(Vertex<T>* v) {
 
     if (f != NULL) {
         int id = f->id;
-        // cout<<id<<" is id\n";
         assert(id >= 0 && id < faces.size());
         inc[id] = 1;
     }
@@ -114,7 +113,6 @@ std::vector<int> Mesh<T>::incidentFaces(Vertex<T>* v) {
 
         if (f) {
             int id = f->id;
-            // cout<<id<<" is id\n";
             assert(id >= 0 && id < faces.size());
             inc[id] = 1;
         }
