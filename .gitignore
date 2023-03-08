@@ -275,6 +275,7 @@ poetry.toml
 *.pages
 *.rtf
 *.txt
+!compile_flags.txt
 *.wpd
 *.wps
 

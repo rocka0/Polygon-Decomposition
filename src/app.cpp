@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+#include "Mesh/Mesh.hpp"
 #include "boundingbox/boundingbox.hpp"
 #include "debugging/print.hpp"
 #include "diagonal/diagonal.hpp"

@@ -1,44 +1,41 @@
+#ifndef _MESH_H
+#define _MESH_H
+
 #include <cassert>
-#include <iostream>
 #include <map>
-#include <vector>
 
-using namespace std;
+#include "../face/face.hpp"
 
-#include "../Face/Face.hpp"
-#include "../HalfEdge/HalfEdge.hpp"
-#include "../Vertex/Vertex.hpp"
-
-#ifndef MESH_H
-#define MESH_H
-
+template <typename T>
 class Mesh {
 public:
-    vector<Vertex*> vertices;
-    vector<Edge*> edges;
-    vector<Face*> faces;
-    map<Point, int> lookup;
+    std::vector<Vertex<T>*> vertices;
+    std::vector<Edge<T>*> edges;
+    std::vector<Face<T>*> faces;
+    std::map<Point<T>, int> lookup;
 
-    Edge* addEdgeToFace(Edge*, Vertex*);
-    Face* createFace(vector<Point>);
-    Face* splitFace(Face*, Vertex*, Vertex*);
-    Vertex* createVertex(Point);
-    Edge* createEdge(Vertex*, Vertex*);
-    void decomposePolygon(vector<pair<Point, Point>>);
-    vector<int> incidentFaces(Vertex*);
+    Edge<T>* addEdgeToFace(Edge<T>*, Vertex<T>*);
+    Face<T>* createFace(std::vector<Point<T>>);
+    Face<T>* splitFace(Face<T>*, Vertex<T>*, Vertex<T>*);
+    Vertex<T>* createVertex(Point<T>);
+    Edge<T>* createEdge(Vertex<T>*, Vertex<T>*);
+    void decomposePolygon(std::vector<std::pair<Point<T>, Point<T>>>);
+    std::vector<int> incidentFaces(Vertex<T>*);
 };
 
-Vertex* Mesh::createVertex(Point p) {
-    Vertex* v = new Vertex(p);
+template <typename T>
+Vertex<T>* Mesh<T>::createVertex(Point<T> p) {
+    Vertex<T>* v = new Vertex(p);
     v->id = vertices.size();
     lookup[p] = v->id;
     vertices.push_back(v);
     return v;
 }
 
-Edge* Mesh::createEdge(Vertex* v1, Vertex* v2) {
-    Edge* e1 = new Edge();
-    Edge* e2 = new Edge();
+template <typename T>
+Edge<T>* Mesh<T>::createEdge(Vertex<T>* v1, Vertex<T>* v2) {
+    Edge<T>* e1 = new Edge<T>();
+    Edge<T>* e2 = new Edge<T>();
 
     e1->origin = v1;
     e2->origin = v2;
@@ -55,8 +52,9 @@ Edge* Mesh::createEdge(Vertex* v1, Vertex* v2) {
     return e1;
 }
 
-Edge* Mesh::addEdgeToFace(Edge* e, Vertex* v) {
-    Edge* edge = createEdge(e->twin->origin, v);
+template <typename T>
+Edge<T>* Mesh<T>::addEdgeToFace(Edge<T>* e, Vertex<T>* v) {
+    Edge<T>* edge = createEdge(e->twin->origin, v);
     edge->prev = e;
     e->next = edge;
     edge->twin->next = e->twin;
@@ -64,40 +62,40 @@ Edge* Mesh::addEdgeToFace(Edge* e, Vertex* v) {
     return edge;
 }
 
-Face* Mesh::createFace(vector<Point> p) {
-    Vertex* v1 = createVertex(p[0]);
-    Vertex* v2 = createVertex(p[1]);
-    Edge* start = createEdge(v1, v2);
-    Edge* e = start;
+template <typename T>
+Face<T>* Mesh<T>::createFace(std::vector<Point<T>> p) {
+    Vertex<T>* v1 = createVertex(p[0]);
+    Vertex<T>* v2 = createVertex(p[1]);
+    Edge<T>* start = createEdge(v1, v2);
+    Edge<T>* e = start;
 
     int n = p.size();
 
     for (int i = 2; i < n; i++) {
-        Vertex* v = createVertex(p[i]);
+        Vertex<T>* v = createVertex(p[i]);
         e = addEdgeToFace(e, v);
     }
 
-    Edge* close = addEdgeToFace(e, v1);
+    Edge<T>* close = addEdgeToFace(e, v1);
     close->next = start;
     start->prev = close;
     start->twin->next = close->twin;
     start->twin->prev = close->twin;
 
-    Face* f = new Face(start);
+    Face<T>* f = new Face(start);
     f->id = faces.size();
     faces.push_back(f);
     return f;
 }
 
-vector<int> Mesh::incidentFaces(Vertex* v) {
-    vector<int> inc(faces.size());
-    Edge* e = v->incident;
-
-    if (e == NULL) cout << v->id << "\n";
+template <typename T>
+std::vector<int> Mesh<T>::incidentFaces(Vertex<T>* v) {
+    std::vector<int> inc(faces.size());
+    Edge<T>* e = v->incident;
 
     assert(e != NULL);
 
-    Face* f = e->right;
+    Face<T>* f = e->right;
 
     if (f != NULL) {
         int id = f->id;
@@ -127,9 +125,10 @@ vector<int> Mesh::incidentFaces(Vertex* v) {
     return inc;
 }
 
-Face* Mesh::splitFace(Face* f, Vertex* v1, Vertex* v2) {
-    Edge* e = f->incident;
-    Edge *e1, *e2;
+template <typename T>
+Face<T>* Mesh<T>::splitFace(Face<T>* f, Vertex<T>* v1, Vertex<T>* v2) {
+    Edge<T>* e = f->incident;
+    Edge<T>*e1, *e2;
 
     while (true) {
         if (e->origin == v1) e1 = e->prev;
@@ -141,7 +140,7 @@ Face* Mesh::splitFace(Face* f, Vertex* v1, Vertex* v2) {
         if (e == f->incident) break;
     }
 
-    Edge* edge = createEdge(v1, v2);
+    Edge<T>* edge = createEdge(v1, v2);
 
     edge->next = e2;
     e2->prev->next = edge->twin;
@@ -155,20 +154,21 @@ Face* Mesh::splitFace(Face* f, Vertex* v1, Vertex* v2) {
     edge->right = f;
     f->incident = edge;
 
-    Face* face = new Face(edge->twin);
+    Face<T>* face = new Face(edge->twin);
     face->id = faces.size();
     faces.push_back(face);
     return face;
 }
 
-void Mesh::decomposePolygon(vector<pair<Point, Point>> v) {
+template <typename T>
+void Mesh<T>::decomposePolygon(std::vector<std::pair<Point<T>, Point<T>>> v) {
     for (auto p : v) {
-        Vertex* v1 = vertices[lookup[p.first]];
-        Vertex* v2 = vertices[lookup[p.second]];
-        Face* face;
+        Vertex<T>* v1 = vertices[lookup[p.first]];
+        Vertex<T>* v2 = vertices[lookup[p.second]];
+        Face<T>* face;
 
-        vector<int> f1 = incidentFaces(v1);
-        vector<int> f2 = incidentFaces(v2);
+        std::vector<int> f1 = incidentFaces(v1);
+        std::vector<int> f2 = incidentFaces(v2);
 
         int c = 0;
 
@@ -181,7 +181,6 @@ void Mesh::decomposePolygon(vector<pair<Point, Point>> v) {
 
         assert(c == 1);
         splitFace(face, v1, v2);
-        cout << faces.size() << "\n";
     }
 }
 

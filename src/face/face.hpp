@@ -1,20 +1,17 @@
-#include <iostream>
+#ifndef _FACE_H
+#define _FACE_H
+
 #include <vector>
 
-#include "../HalfEdge/HalfEdge.hpp"
-#include "../Vertex/Vertex.hpp"
+#include "../halfedge/halfedge.hpp"
 
-using namespace std;
-
-#ifndef FACE_H
-#define FACE_H
-
+template <typename T>
 class Face {
 public:
-    Edge* incident;
+    Edge<T>* incident;
     int id;
 
-    Face(Edge* e) {
+    Face(Edge<T>* e) {
         e->right = this;
         incident = e;
         setFace();
@@ -22,7 +19,7 @@ public:
     }
 
     void setFace() {
-        Edge* edge = incident->next;
+        Edge<T>* edge = incident->next;
 
         while (edge != incident) {
             edge->right = this;
@@ -30,9 +27,9 @@ public:
         }
     }
 
-    vector<Vertex*> listVertices() {
-        vector<Vertex*> v;
-        Edge* edge = incident;
+    std::vector<Vertex<T>*> listVertices() {
+        std::vector<Vertex<T>*> v;
+        Edge<T>* edge = incident;
         v.push_back(edge->origin);
         edge = edge->next;
 
