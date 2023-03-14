@@ -1,72 +1,11 @@
 #!/usr/bin/python
 
-from random import randint
+from secrets import randbelow
 
 
-def getInt(a, b):
-    """
-    Returns a random integer x which lies in the range [a,b].
-        Parameters:
-            a (int): Lower bound
-            b (int): Upper bound
-        Returns:
-            x (int): The random number
-    """
-
-    assert a <= b, f"getInt({a},{b}) has a > b"
-    a = int(a)
-    b = int(b)
-    return randint(a, b)
-
-
-def getPair(a, b, way=1):
-    """
-    Returns a random pair of integers (x,y) such that x and y lie in the range [a,b].
-        Parameters:
-            a (int):    Lower bound
-            b (int):    Upper bound
-
-            way (int):  Decides the ordering of the pairs:
-
-                (way = 1) => random
-
-                (way = 2) => strictly increasing
-
-                (way = 3) => weakly increasing
-
-                (way = 4) => strictly decreasing
-
-                (way = 5) => weakly decreasing
-        Returns:
-            (x,y): Randomly generated pair of integers
-    """
-
-    a = int(a)
-    b = int(b)
-    way = int(way)
-
-    x = getInt(a, b)
-
-    if way == 1:
-        y = getInt(a, b)
-    elif way == 2:
-        assert a < b, "a < b for strictly increasing"
-        while x == b:
-            x = getInt(a, b)
-        y = getInt(x + 1, b)
-    elif way == 3:
-        y = getInt(x, b)
-    elif way == 4:
-        assert a < b, "a < b for strictly decreasing"
-        while x == a:
-            x = getInt(a, b)
-        y = getInt(a, x - 1)
-    elif way == 5:
-        y = getInt(a, x)
-    else:
-        raise RuntimeError("Invalid way passed")
-
-    return (x, y)
+def randInt(a, b):
+    assert a <= b
+    return randbelow(b - a + 1) + a
 
 
 def orientation(p1, p2, p3):
@@ -116,13 +55,19 @@ def polygonFromPoints(points):
 
 
 def main():
-    n = getInt(3, 20)
+    n = randInt(3, 1000)
+
+    BOUND = int(1e3)
 
     points = []
+    chosen = set([])
 
     for _ in range(n):
-        x, y = getPair(0, 50)
-        points.append((x, y))
+        point = (randInt(0, BOUND), randInt(0, BOUND))
+        while point in chosen:
+            point = (randInt(0, BOUND), randInt(0, BOUND))
+        chosen.add(point)
+        points.append(point)
 
     polygon = polygonFromPoints(points)
 
