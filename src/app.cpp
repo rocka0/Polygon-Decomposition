@@ -11,6 +11,7 @@
 #include "debugging/print.hpp"
 #include "diagonal/diagonal.hpp"
 #include "dsu/dsu.hpp"
+#include "mesh/mesh.hpp"
 #include "pointset/pointset.hpp"
 #include "utils/orientation.hpp"
 
@@ -264,10 +265,10 @@ void outputDecomposition(vector<polygon> &decomposition, string fileName) {
     outputFile.close();
 }
 
-void extractFinalDiagonals(map<diagonal, pair<int, int>> &LLE, DSU &unionFind, vector<diagonal> &finalDiagonals) {
+void extractFinalDiagonals(map<diagonal, pair<int, int>> &LLE, DSU &unionFind, vector<pair<point, point>> &finalDiagonals) {
     for (auto &[diag, faces] : LLE) {
         if (unionFind.leader(faces.first) != unionFind.leader(faces.second)) {
-            finalDiagonals.push_back(diag);
+            finalDiagonals.push_back({diag.u, diag.v});
         }
     }
 }
@@ -277,12 +278,18 @@ int main() {
     cin >> n;
 
     polygon input, inputCopy;
+    vector<point> dcelInput(n);
     for (int i = 0; i < n; ++i) {
         point p;
         cin >> p.x >> p.y;
         input.addVertex(p);
+        dcelInput[i] = p;
     }
     inputCopy = input;
+
+    // Build initial face in DCEL
+    Mesh<ptype> DCEL;
+    DCEL.createFace(dcelInput);
 
     vector<polygon> decomposition;
     while (input.size() > 2) {
@@ -310,6 +317,8 @@ int main() {
     }
     outputDecomposition(finalDecomposition, "after.txt");
 
-    vector<diagonal> finalDiagonals;
+    vector<pair<point, point>> finalDiagonals;
     extractFinalDiagonals(LLE, unionFind, finalDiagonals);
+
+    DCEL.decomposePolygon(finalDiagonals);
 }
