@@ -1,3 +1,7 @@
+/**
+ * @app.cpp
+ * This file contains the implementation of the polygon decomposition algorithm.
+ */
 #include <algorithm>
 #include <cassert>
 #include <fstream>
@@ -17,6 +21,7 @@
 
 using namespace std;
 
+///< Datatype of the coordinates of the point
 typedef int ptype;
 typedef Point<ptype> point;
 typedef Polygon<ptype> polygon;
@@ -25,6 +30,13 @@ typedef BoundingBox<ptype> boundingbox;
 typedef PointSet<ptype> pointset;
 typedef Diagonal<ptype> diagonal;
 
+/**
+ * @brief Function to check if a vertex x of type vptr (vertex pointer) is inside
+ * the list of vertices L
+ * @param L List of vertex pointers
+ * @param x Vertex pointer
+ * @return `true` if `x` is inside `L`, otherwise `false`
+ */
 bool insideL(list<vptr> &L, vptr x) {
     for (auto it = L.begin(); it != L.end(); ++it) {
         vptr u = *it;
@@ -41,8 +53,14 @@ bool insideL(list<vptr> &L, vptr x) {
     return true;
 }
 
-// returns pointer to vertex in P which is a notch inside the convex polygon enclosed by L
-// returns P.end() if no such vertex exists
+/**
+ * @brief Returns pointer to vertex in P which is a notch inside the convex polygon enclosed by L
+ * @param P Polygon
+ * @param L List of vertices
+ * @param R Bounding box
+ * @param PS Point set
+ * @return Pointer to the vertex in `P` which is a notch inside the convex polygon enclosed by `L`. If no such vertex exists, returns `P.end()`
+ */
 vptr getNotchInsideL(polygon &P, list<vptr> &L, boundingbox &R, pointset &PS) {
     for (auto it = PS.begin(); it != PS.end();) {
         vptr v = *it;
@@ -56,6 +74,12 @@ vptr getNotchInsideL(polygon &P, list<vptr> &L, boundingbox &R, pointset &PS) {
     return P.end();
 }
 
+/**
+ * @brief Builds the list of vertices L for the polygon P
+ * @param P The polygon to be processed
+ * @param start The pointer to the vertex at which to start the processing of the polygon P
+ * @return The list of vertices L
+ */
 list<vptr> buildL(polygon &P, vptr start) {
     list<vptr> L;
 
@@ -97,6 +121,11 @@ list<vptr> buildL(polygon &P, vptr start) {
     return L;
 }
 
+/**
+ * @brief Removes the edges defined by the vertices in L from the polygon P
+ * @param P The polygon from which edges need to be removed
+ * @param L The list of vertices representing the edges to be removed from P
+ */
 void eraseEdges(polygon &P, list<vptr> &L) {
     auto it = L.begin();
     for (int i = 0; i < static_cast<int>(L.size()) - 2; ++i) {
@@ -113,6 +142,11 @@ void eraseEdges(polygon &P, list<vptr> &L) {
     }
 }
 
+/**
+ * @brief Decomposes polygon P into 2 convex polygons
+ * @param P The polygon to be decomposed
+ * @return A polygon representing one of the two convex polygons after decomposition; P is the remaining polygon after the returned polygon is cut off
+ */
 polygon decompose(polygon &P) {
     if (P.size() <= 2) return P;
 
@@ -131,10 +165,14 @@ polygon decompose(polygon &P) {
     return decomposition;
 }
 
-/*
-Second half begins
-*/
-
+/**
+ * @brief Returns pointer to vertex in P which is a notch inside the convex polygon enclosed by L
+ * @param P Polygon
+ * @param L List of vertices
+ * @param R Bounding box
+ * @param PS Point set
+ * @return Pointer to the vertex in `P` which is a notch inside the convex polygon enclosed by `L`. If no such vertex exists, returns `P.end()`
+ */
 bool belongsToPolygon(diagonal d, polygon &P) {
     for (auto it = P.begin(); it != P.end(); ++it) {
         diagonal edge{*it, *P.nextVertex(it)};
@@ -145,6 +183,13 @@ bool belongsToPolygon(diagonal d, polygon &P) {
     return false;
 }
 
+/**
+ * Builds the LLE data structure according to the paper. The LLE stores the left and right faces of a diagonal.
+ *
+ * @param P             the polygon
+ * @param decomposition the polygon's decomposition
+ * @param LLE           the LLE data structure to be built
+ */
 void buildLLE(polygon &P, vector<polygon> &decomposition, map<diagonal, pair<int, int>> &LLE) {
     for (int i = 0; i < (int) decomposition.size(); ++i) {
         for (auto it = decomposition[i].begin(); it != decomposition[i].end(); ++it) {
@@ -162,12 +207,29 @@ void buildLLE(polygon &P, vector<polygon> &decomposition, map<diagonal, pair<int
     }
 }
 
+/**
+ * @brief Comparator for sorting points in the LP data structure.
+ */
 struct LP_CMP {
+    /**
+     * @brief Compares two points.
+     * @param a First point.
+     * @param b Second point.
+     * @return True if a < b, false otherwise.
+     */
     bool operator()(const point a, const point b) const {
         return a < b;
     }
 };
 
+/**
+ * @brief Builds the LP data structure.
+ *
+ * The LP data structure maps a point to its neighboring faces.
+ *
+ * @param LLE Map storing the left and right faces of each diagonal.
+ * @param LP Map to be constructed.
+ */
 void buildLP(map<diagonal, pair<int, int>> &LLE, map<point, vector<pair<int, point>>, LP_CMP> &LP) {
     for (auto &[diag, faces] : LLE) {
         LP[diag.u].push_back({faces.first, diag.v});
@@ -177,6 +239,17 @@ void buildLP(map<diagonal, pair<int, int>> &LLE, map<point, vector<pair<int, poi
     }
 }
 
+/**
+ * @brief Check if a diagonal can be removed from the polygon without breaking the convexity of the decomposition.
+ *
+ * @param d The diagonal to be removed.
+ * @param LP A map of point to all its neighbouring faces
+ * @param P The polygon.
+ * @param LLE A map containing the left and right faces of each diagonal.
+ * @param decomposition The decomposition of the polygon.
+ * @param unionFind A data structure to maintain the connected components of the decomposition.
+ * @return True if the diagonal can be removed without breaking the convexity, false otherwise.
+ */
 bool canRemoveDiagonal(diagonal d, map<point, vector<pair<int, point>>, LP_CMP> &LP, polygon &P, map<diagonal, pair<int, int>> &LLE, vector<polygon> &decomposition, DSU &unionFind) {
     point u = d.u;
     point v = d.v;
@@ -215,6 +288,14 @@ bool canRemoveDiagonal(diagonal d, map<point, vector<pair<int, point>>, LP_CMP> 
     }
 }
 
+/**
+ * @brief Merge the two faces on either side of diagonal d.
+ *
+ * @param d Diagonal to be removed.
+ * @param LLE Map containing the left and right faces of each diagonal.
+ * @param decomposition Vector of polygons representing the decomposition.
+ * @param unionFind A data structure to maintain the connected components of the decomposition.
+ */
 void merge(diagonal d, map<diagonal, pair<int, int>> &LLE, vector<polygon> &decomposition, DSU &unionFind) {
     pair<int, int> faces = LLE[d];
     int LF = unionFind.leader(faces.first);
@@ -244,6 +325,15 @@ void merge(diagonal d, map<diagonal, pair<int, int>> &LLE, vector<polygon> &deco
     }
 }
 
+/**
+ * @brief This function iterates over all diagonals in LLE and tries to merge them
+ *
+ * @param LP A map of point to all its neighbouring faces
+ * @param P The polygon to be merged
+ * @param LLE A map that stores the left and right faces of each diagonal
+ * @param decomposition A vector of polygons that stores the decomposition of the polygon P
+ * @param unionFind A data structure to maintain the connected components of the decomposition.
+ */
 void mergePolygons(map<point, vector<pair<int, point>>, LP_CMP> &LP, polygon &P, map<diagonal, pair<int, int>> &LLE, vector<polygon> &decomposition, DSU &unionFind) {
     for (auto &[diag, _] : LLE) {
         if (canRemoveDiagonal(diag, LP, P, LLE, decomposition, unionFind)) {
@@ -252,6 +342,14 @@ void mergePolygons(map<point, vector<pair<int, point>>, LP_CMP> &LP, polygon &P,
     }
 }
 
+/**
+ * @brief Outputs the decomposition to a file
+ *
+ * This function outputs the decomposition to a file so that it can be read by other sources.
+ *
+ * @param decomposition Vector of polygons representing the decomposition
+ * @param fileName Name of the output file
+ */
 void outputDecomposition(vector<polygon> &decomposition, string fileName) {
     ofstream outputFile(fileName);
     outputFile << fixed << setprecision(14);
@@ -265,6 +363,14 @@ void outputDecomposition(vector<polygon> &decomposition, string fileName) {
     outputFile.close();
 }
 
+/**
+ * @brief This function is used to extract the final diagonals which will be passed to the DCEL
+ * which will use the diagonals to split faces and store the subdivision information
+ *
+ * @param LLE Map containing the diagonals and their adjacent faces
+ * @param unionFind The data structure representing the sets of connected faces
+ * @param finalDiagonals Vector to store the final diagonals
+ */
 void extractFinalDiagonals(map<diagonal, pair<int, int>> &LLE, DSU &unionFind, vector<pair<point, point>> &finalDiagonals) {
     for (auto &[diag, faces] : LLE) {
         if (unionFind.leader(faces.first) != unionFind.leader(faces.second)) {
@@ -273,6 +379,11 @@ void extractFinalDiagonals(map<diagonal, pair<int, int>> &LLE, DSU &unionFind, v
     }
 }
 
+/**
+ * @brief Entry point of the program that computes the convex planar subdivision of a simple polygon
+ *
+ * @return int Exit status of the program
+ */
 int main() {
     int n;
     cin >> n;
