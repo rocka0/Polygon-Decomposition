@@ -4,6 +4,16 @@ from secrets import randbelow
 
 
 def randInt(a, b):
+    """
+    Returns a random integer between a and b inclusive.
+
+    Parameters:
+    a (int): Lower bound of the range (inclusive).
+    b (int): Upper bound of the range (inclusive).
+
+    Returns:
+    A random integer between a and b (inclusive).
+    """
     assert a <= b
     return randbelow(b - a + 1) + a
 
@@ -11,13 +21,15 @@ def randInt(a, b):
 def orientation(p1, p2, p3):
     """
     Returns the orientation of the points (p1, p2, p3), that is the angle between the vector (p2-p1)
-    and vector (p3-p1)
-        Parameters:
-            p1(tuple): Point One
-            p2(tuple): Point Two
-            p3(tuple): Point Three
-        Returns:
-            cross product of vector (p2-p1) and (p3-p1)
+    and vector (p3-p1).
+
+    Parameters:
+    p1 (tuple): The first point.
+    p2 (tuple): The second point.
+    p3 (tuple): The third point.
+
+    Returns:
+    The cross product of vector (p2-p1) and (p3-p1).
     """
     a = (p2[0] - p1[0], p2[1] - p1[1])
     b = (p3[0] - p1[0], p3[1] - p1[1])
@@ -26,11 +38,13 @@ def orientation(p1, p2, p3):
 
 def polygonFromPoints(points):
     """
-    Returns a simple polygon from a collection of points
-        Parameters:
-            points([int]): Input point set
-        Returns:
-            polygon([int]): Vertex list of polygon sorted in clockwise order
+    Returns a simple polygon from a collection of points.
+
+    Parameters:
+    points ([int]): The input point set.
+
+    Returns:
+    The vertex list of polygon sorted in clockwise order.
     """
     points = sorted(points)
 
@@ -55,6 +69,12 @@ def polygonFromPoints(points):
 
 
 def main():
+    """
+    Generates a random simple polygon and prints its vertex list in clockwise order.
+
+    Returns:
+    0 upon successful execution.
+    """
     n = randInt(3, 100)
 
     BOUND = 1000

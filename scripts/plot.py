@@ -1,26 +1,22 @@
 import matplotlib.pyplot as plt
 
-# create two plots
-# fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 10))
+# Read input file
+with open("./input.txt", "r") as f:
+    # Read the number of vertices
+    n = int(f.readline())
+    x = []
+    y = []
 
-f = open("./input.txt", "r")
-# Read the number of vertices
-n = int(f.readline())
-x = []
-y = []
+    # Read the coordinates of the vertices of the original polygon
+    for i in range(n):
+        line = f.readline().split()
+        x.append(float(line[0]))
+        y.append(float(line[1]))
+    # Add the first vertex to the end to close the polygon
+    x.append(x[0])
+    y.append(y[0])
 
-# Read the coordinates of the vertices of the original polygon
-for i in range(n):
-    line = f.readline().split()
-    x.append(float(line[0]))
-    y.append(float(line[1]))
-# Add the first vertex to the end to close the polygon
-x.append(x[0])
-y.append(y[0])
-
-f.close()
-
-# plot
+# Plot the original polygon
 plt.scatter(x, y, color="red", marker=".", zorder=2)
 plt.plot(x, y, color="dimgrey", linewidth=2, zorder=1)
 plt.title("Original Polygon")
@@ -28,11 +24,13 @@ plt.xlabel("X-axis")
 plt.ylabel("Y-axis")
 plt.grid(color="gray", linestyle="--", linewidth=0.5)
 
+# Save the plot to a file
 plt.savefig("polygon.png", dpi=300)
 
 # Clear the figure
 plt.clf()
 
+# Define colors for different decompositions
 colors = [
     "blueviolet",
     "dodgerblue",
@@ -45,47 +43,59 @@ colors = [
     "green",
     "saddlebrown",
 ]
-
 l = len(colors)
 
+def make_plot(file_name):
+    # Get the name of the file
+    name = file_name.split(".")[0].title()
 
-def makePlot(fileName):
-    name = fileName.split(".")[0].title()
-    with open(fileName, "r") as f:
+    # Read the decomposition from the file
+    with open(file_name, "r") as f:
         # Clear the figure
         plt.clf()
-        # number of decompositions
+
+        # Get the number of decompositions
         m = int(f.readline())
+
+        # Plot each decomposition
         for i in range(m):
-            # i_th decomposition
+            # Get the number of vertices in the i-th decomposition
             m_i = int(f.readline())
 
             x_i = []
             y_i = []
 
-            # read the coordinates
+            # Read the coordinates of the vertices
             for j in range(m_i):
                 line = f.readline().split()
                 x_i.append(float(line[0]))
                 y_i.append(float(line[1]))
+            # Add the first vertex to the end to close the polygon
             x_i.append(x_i[0])
             y_i.append(y_i[0])
 
+            # Plot the i-th decomposition
             plt.fill(x_i, y_i, color=colors[i % l], alpha=0.5)
             plt.plot(x_i, y_i, color=colors[i % l], linewidth=2)
 
+        # Plot the original polygon
         plt.scatter(x, y, color="red", marker=".", zorder=m)
+
+        # Set the title, labels and grid
         plt.title(f"{name} Merging: {m} Polygons")
         plt.xlabel("X-axis")
         plt.ylabel("Y-axis")
         plt.grid(color="gray", linestyle="--", linewidth=0.5)
+
+        # Save the plot to a file
         name = name.lower()
         plt.savefig(f"{name}.png", dpi=300)
 
+# Plot the decompositions before merging
+make_plot("before.txt")
 
-makePlot("before.txt")
-makePlot("after.txt")
+# Plot the decompositions after merging
+make_plot("after.txt")
 
-# plt.scatter(x, y, color='red', marker='x')
-# fig.savefig('decompositions.png', dpi=300)
-# plt.show()
+# Clear the figure
+plt.clf()
