@@ -1,3 +1,8 @@
+/**
+ * @file mesh.hpp
+ * @brief Definition of the Mesh class template and its associated function templates  
+ */
+
 #ifndef _MESH_H
 #define _MESH_H
 
@@ -6,6 +11,14 @@
 
 #include "../face/face.hpp"
 
+/**
+ * @brief Mesh class template
+ *
+ * This class represents a Mesh, which is a subdivision of the 2D-plane, implemented using the DCEL data
+ * structure. A Mesh object is composed of a list of vertices, half-edges and faces present in the mesh.
+ * 
+ * @tparam T The type of the coordinates of the points.
+ */
 template <typename T>
 class Mesh {
 public:
@@ -23,6 +36,17 @@ public:
     std::vector<int> incidentFaces(Vertex<T>*);
 };
 
+
+/**
+ * @brief Creates a new vertex.
+ * 
+ * This function creates a new vertex object corresponding to the given point object 
+ * and adds it to the mesh.
+ * 
+ * @param p The corresponding point object  
+ * 
+ * @return A pointer to the vertex object newly created.
+*/
 template <typename T>
 Vertex<T>* Mesh<T>::createVertex(Point<T> p) {
     Vertex<T>* v = new Vertex(p);
@@ -32,6 +56,18 @@ Vertex<T>* Mesh<T>::createVertex(Point<T> p) {
     return v;
 }
 
+
+/**
+ * @brief Creates a pair of half-edges.
+ *
+ * This function creates the half-edge and the corresponding twin edge between the given pair of vertices, 
+ * and adds them to the mesh.
+ *  
+ * @param v1 A pointer to the start vertex of the new half-edge
+ * @param v2 A pointer to the end vertex of the new half-edge.
+ * 
+ * @return A pointer to the half-edge from v1 to v2.
+*/
 template <typename T>
 Edge<T>* Mesh<T>::createEdge(Vertex<T>* v1, Vertex<T>* v2) {
     Edge<T>* e1 = new Edge<T>();
@@ -52,6 +88,18 @@ Edge<T>* Mesh<T>::createEdge(Vertex<T>* v1, Vertex<T>* v2) {
     return e1;
 }
 
+
+/**
+ * @brief Adds a pair of half-edges to the currently forming face.
+ * 
+ * Adds the next pair of half-edges in clockwise order to the outer boundary of the currently forming
+ * face, and updates the mesh.
+ * 
+ * @param e A pointer to the previous half-edge in the face.
+ * @param v A pointer to the start vertex of the new half-edge. 
+ *
+ * @return A pointer to the newly formed half-edge. 
+*/
 template <typename T>
 Edge<T>* Mesh<T>::addEdgeToFace(Edge<T>* e, Vertex<T>* v) {
     Edge<T>* edge = createEdge(e->twin->origin, v);
@@ -62,6 +110,16 @@ Edge<T>* Mesh<T>::addEdgeToFace(Edge<T>* e, Vertex<T>* v) {
     return edge;
 }
 
+
+/**
+ * @brief Creates a new face in the mesh.
+ * 
+ * This function creates a new face in the mesh from the given vector of points.
+ * 
+ * @param p A vector containing the clockwise listing of the points making the face.
+ * 
+ * @return A pointer to the newly created face.
+*/
 template <typename T>
 Face<T>* Mesh<T>::createFace(std::vector<Point<T>> p) {
     Vertex<T>* v1 = createVertex(p[0]);
@@ -88,6 +146,14 @@ Face<T>* Mesh<T>::createFace(std::vector<Point<T>> p) {
     return f;
 }
 
+
+/**
+ * @brief Lists all faces containing the given vertex. 
+ *
+ * @param v A pointer to the vertex object.
+ * 
+ * @return A vector of id's of all the faces containing the given vertex.  
+*/
 template <typename T>
 std::vector<int> Mesh<T>::incidentFaces(Vertex<T>* v) {
     std::vector<int> inc(faces.size());
@@ -123,6 +189,19 @@ std::vector<int> Mesh<T>::incidentFaces(Vertex<T>* v) {
     return inc;
 }
 
+
+/**
+ * @brief Splits a face.
+ * 
+ * This function splits the given face along the diagonal between the 2 given vertices. One of the faces
+ * retains its id while the other is treated as a new face.
+ * 
+ * @param f A pointer to the face to be splitted.
+ * @param v1 A pointer to the first vertex of the diagonal.
+ * @param v2 A pointer to the second vertex of the diagonal.
+ * 
+ * @return A pointer to the face newly created.
+*/
 template <typename T>
 Face<T>* Mesh<T>::splitFace(Face<T>* f, Vertex<T>* v1, Vertex<T>* v2) {
     Edge<T>* e = f->incident;
@@ -158,6 +237,15 @@ Face<T>* Mesh<T>::splitFace(Face<T>* f, Vertex<T>* v1, Vertex<T>* v2) {
     return face;
 }
 
+
+/**
+ * @brief Decomposes the initial polygon.
+ * 
+ * This function decomposes the initial polygon along the given diagonals and updates the mesh with 
+ * the decomposed polygons.
+ * 
+ * @param v A vector of pair of point objects, with each pair representing a diagonal.
+*/
 template <typename T>
 void Mesh<T>::decomposePolygon(std::vector<std::pair<Point<T>, Point<T>>> v) {
     for (auto p : v) {
