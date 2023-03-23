@@ -54,19 +54,83 @@ We first start by generating the number of vertices of our polygon $n$. We will 
 
 We sort the points of $U$ in increasing order of $x$ coordinates and $L$ in decreasing order of $x$ coordinates. Then we concatenate $U$ with reverse list of $L$ which gives us a simple polygon.
 
-## Real World Example
+## Sample runs of the code
 
-Here we use the India map test case.
+### Simple polygon with $n = 16$
 
-## Findings and Analysis
+*input.txt*:
 
-> The following benchmarks performed on a tetradeca (14)-core 2.3 GHz 12th Gen Intel i7-12700H0 with 15.7 GiB of RAM and 1TB SATA disk drive; using Ubuntu 20.04.6 LTS x86_64 GNU/Linux 5.15.90.1-microsoft-standard-WSL2. The code was compiled with the following command: `g++ -std=c++17 -O3 src/app.cpp -o app`
+```text
+16
+83 885
+629 825
+670 481
+852 475
+865 967
+907 466
+976 218
+632 246
+525 344
+487 26
+401 323
+279 134
+272 293
+253 738
+126 728
+88 775
+```
+
+*polygon.png*
+
+<img src="img/simple/polygon.png"/>
+
+*before.png*
+
+<img src="img/simple/before.png"/>
+
+*after.png*
+
+<img src="img/simple/after.png"/>
+
+### Simple polygon representing the boundary of India
+
+Map of India plots go here
+
+## Findings and analysis
+
+> The following benchmarks performed on a tetradeca (14)-core 2.3 GHz 12th Gen Intel i7-12700H0 with 15.7 GiB of RAM and 1TB SSD; using Ubuntu 20.04.6 LTS x86_64 GNU/Linux 5.15.90.1-microsoft-standard-WSL2. The code was compiled with the following command: `g++ -std=c++17 -O3 src/app.cpp -o app`
 
 ### Running time *vs* Number of vertices in the simple polygon.
 
+Plot $1$ goes here.
+
 ### Number of Decompositions (Before and After Merging) *vs* Number of vertices ($n$) in the simple polygon.
 
+Plot $2$ goes here.
+
 ### Effect of starting point of decomposition on running time for a fixed number of vertices.
+
+We compare the various outputs obtained on the following polygon depending on the starting point of our algorithm:
+
+<img src="img/varyStartingVertex/polygon.png"/>
+
+| Starting Point | Running Time ($\mu s$) | Number of Polygons (Before Merging) | Number of Polygons (After Merging) |
+| -------------- | ---------------------- | ----------------------------------- | ---------------------------------- |
+| a              | 2129                   | 9                                   | 6                                  |
+| b              | 2013                   | 8                                   | 6                                  |
+| c              | 2343                   | 9                                   | 6                                  |
+| d              | 1962                   | 9                                   | 6                                  |
+| e              | 1969                   | 8                                   | 6                                  |
+| f              | 1941                   | 8                                   | 6                                  |
+| g              | 1784                   | 10                                  | 6                                  |
+| h              | 2134                   | 9                                   | 6                                  |
+| i              | 1973                   | 9                                   | 6                                  |
+| j              | 2134                   | 9                                   | 6                                  |
+| k              | 1761                   | 8                                   | 6                                  |
+| l              | 1836                   | 8                                   | 6                                  |
+| m              | 1955                   | 10                                  | 6                                  |
+| n              | 1810                   | 10                                  | 6                                  |
+| o              | 1983                   | 9                                   | 6                                  |
 
 ## Experimental Time Complexity
 Based on the plots, we can see that the program runs in: $$ \mathcal{O}(n^{2} \log n) $$
