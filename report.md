@@ -54,14 +54,19 @@ We first start by generating the number of vertices of our polygon $n$. We will 
 
 We sort the points of $U$ in increasing order of $x$ coordinates and $L$ in decreasing order of $x$ coordinates. Then we concatenate $U$ with reverse list of $L$ which gives us a simple polygon.
 
+## Real World Example
+
+Here we use the India map test case.
+
 ## Findings and Analysis
 
- - Running time of algorithm $vs$ number of vertices ($n$) in the simple polygon.
-	- For smaller $n$, do more trials and for larger $n$, do less trials 
- - Number of decompositions $vs$ number of vertices ($n$) in the simple polygon.
-	- As a corollary, we also plot number of polygons reduced (merged) vs number of vertices ($n$) in the simple polygon.
- - Simple hand made test case to identify the effect of start point of algorithm on output.
- - One real life significant test case (Eg. India map as a simple polygon or anything else)
+> The following benchmarks performed on a tetradeca (14)-core 2.3 GHz 12th Gen Intel i7-12700H0 with 15.7 GiB of RAM and 1TB SATA disk drive; using Ubuntu 20.04.6 LTS x86_64 GNU/Linux 5.15.90.1-microsoft-standard-WSL2. The code was compiled with the following command: `g++ -std=c++17 -O3 src/app.cpp -o app`
+
+### Running time *vs* Number of vertices in the simple polygon.
+
+### Number of Decompositions (Before and After Merging) *vs* Number of vertices ($n$) in the simple polygon.
+
+### Effect of starting point of decomposition on running time for a fixed number of vertices.
 
 ## Experimental Time Complexity
-Based on the plots, we can see that the program runs in $$ \mathcal{O}(n^{2} \log n) $$
+Based on the plots, we can see that the program runs in: $$ \mathcal{O}(n^{2} \log n) $$

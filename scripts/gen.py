@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from sys import argv
 from secrets import randbelow
 
 
@@ -75,7 +76,10 @@ def main():
     Returns:
     0 upon successful execution.
     """
-    n = randInt(3, 100)
+    if len(argv) == 2:
+        n = int(argv[1])
+    else:
+        n = randInt(3, 100)
 
     BOUND = 1000
 

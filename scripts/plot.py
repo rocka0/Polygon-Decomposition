@@ -45,6 +45,7 @@ colors = [
 ]
 l = len(colors)
 
+
 def make_plot(file_name):
     # Get the name of the file
     name = file_name.split(".")[0].title()
@@ -90,6 +91,7 @@ def make_plot(file_name):
         # Save the plot to a file
         name = name.lower()
         plt.savefig(f"{name}.png", dpi=300)
+
 
 # Plot the decompositions before merging
 make_plot("before.txt")
