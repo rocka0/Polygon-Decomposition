@@ -2,6 +2,7 @@
 
 from sys import argv
 from secrets import randbelow
+from random import SystemRandom
 
 
 def randInt(a, b):
@@ -17,6 +18,21 @@ def randInt(a, b):
     """
     assert a <= b
     return randbelow(b - a + 1) + a
+
+
+def randFloat(a, b):
+    """
+    Returns a random float between a and b.
+
+    Parameters:
+    a (float): Lower bound of the range (inclusive).
+    b (float): Upper bound of the range (exclusive).
+
+    Returns:
+    A random float between a and b.
+    """
+    assert a <= b
+    return SystemRandom().uniform(a, b)
 
 
 def orientation(p1, p2, p3):
@@ -79,17 +95,17 @@ def main():
     if len(argv) == 2:
         n = int(argv[1])
     else:
-        n = randInt(3, 100)
+        n = randInt(3, 50)
 
-    BOUND = 1000
+    BOUND = int(1e9)
 
     points = []
     chosen = set([])
 
     for _ in range(n):
-        point = (randInt(0, BOUND), randInt(0, BOUND))
+        point = (randFloat(0, BOUND), randFloat(0, BOUND))
         while point in chosen:
-            point = (randInt(0, BOUND), randInt(0, BOUND))
+            point = (randFloat(0, BOUND), randFloat(0, BOUND))
         chosen.add(point)
         points.append(point)
 
