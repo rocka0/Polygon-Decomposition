@@ -3,23 +3,33 @@ from os import system
 
 console = Console()
 
-T = 10
 
-system("g++ -std=c++17 src/app.cpp -o app")
+def run_tests():
+    """
+    Runs a series of tests on the compiled program by generating input files and running the program with them.
+    Returns:
+        None
+    """
+    T = 1000
 
-for t in range(1, T + 1):
-    system("python3 scripts/gen.py > input.txt")
+    system("g++ -std=c++17 src/app.cpp -o app")
 
-    with console.status(f"[bold pink]Running Test Case [bold blue]{t}") as status:
-        ret = system("./app < input.txt")
+    for t in range(1, T + 1):
+        system("python3 scripts/gen.py > input.txt")
 
-    if ret != 0:
-        console.log(f"[bold red]ERR[/]: Test Case [bold blue]{t}")
-        system("rm ./app")
-        exit(0)
-    else:
-        console.log(f"[bold green]AC[/]: Test Case [bold blue]{t}")
+        with console.status(f"[bold pink]Running Test Case [bold blue]{t}") as status:
+            ret = system("./app < input.txt")
 
-    T -= 1
+        if ret != 0:
+            console.log(f"[bold red]ERR[/]: Test Case [bold blue]{t}")
+            system("rm ./app")
+            exit(0)
+        else:
+            console.log(f"[bold green]AC[/]: Test Case [bold blue]{t}")
 
-system("rm ./app input.txt after.txt before.txt")
+        T -= 1
+
+    system("rm ./app input.txt after.txt before.txt")
+
+
+run_tests()

@@ -1,3 +1,8 @@
+/**
+ * @file halfedge.hpp
+ * @brief Definition of the Edge class template and its associated function templates.  
+*/
+
 #ifndef _HALFEDGE_H
 #define _HALFEDGE_H
 
@@ -6,17 +11,46 @@
 template <typename T>
 class Face;
 
+/**
+ * @brief Edge class template
+ * 
+ * This class represents a directed half-edge between two vertices. 
+ * 
+ * @tparam T The type of the coordinates of the points. 
+*/
 template <typename T>
 class Edge {
-    // These are directed edges
 
 public:
+    
+    /**
+     * The twin half-edge between the same pair of vertices. 
+    */
     Edge<T>* twin;
+    
+    /**
+     * The starting vertex of the edge.
+    */
     Vertex<T>* origin;
-    Face<T>* right;    // not left beacuse CW orientation
-    Edge<T>* next;     // in CW order
-    Edge<T>* prev;     // in CW order
+    
+    /**
+     * The face to the right of the edge.
+    */
+    Face<T>* right;    
+    
+    /**
+     * The next edge in clockwise order in the same face. 
+    */
+    Edge<T>* next;     
+    
+    /**
+     * The previous edge in clockwise order in the same face.
+    */
+    Edge<T>* prev;   
 
+    /**
+     * @brief The non-parameterized constructor for Edge class.
+    */
     Edge() {
         twin = nullptr;
         origin = nullptr;
