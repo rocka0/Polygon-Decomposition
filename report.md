@@ -18,9 +18,17 @@ Our additional tasks were as follows:
 1. Store the planar subdivision in a structure known as a [DCEL](https://en.wikipedia.org/wiki/Doubly_connected_edge_list) which allows us to effectively represent and query planar subdivisions.
 2. Write a program to visualize the output of the algorithm, i.e, given a simple polygon, output the decomposition produced by the algorithm in a visually intuitive way.
 
-## DCEL: The What and The How
+## DCEL
 
-Explain DCEL here
+A doubly connected edge list, or a *DCEL*, is an edge-based representation used for planar subdivisions. In our implementation of the *DCEL*, we have also included vertex and face information, as they give more insights regarding the initial, as well as the decomposed polygons.  
+
+Formally, a *DCEL* object consists of lists of :
+
+ - Vertex objects
+ - Half-edge objects
+ - Face objects
+
+The *DCEL* stores the polygons obtained as a result of the decomposition. 
 
 ## Plotting the outputs
 
@@ -110,11 +118,16 @@ We sort the points of $U$ in increasing order of $x$ coordinates and $L$ in decr
 
 ### Running time *vs* Number of vertices in the simple polygon.
 
-Plot $1$ goes here.
+<img src="img/analysis/RunningTime_vs_N.png"/>
+
+We observe that as the number of vertices increases, the running time tends to increase, and the rate of increase is faster than linear. From the nature of the plot and our analysis of the code, we hypothesize that the running time is pseudo-polynomial.
 
 ### Number of Decompositions (Before and After Merging) *vs* Number of vertices ($n$) in the simple polygon.
 
-Plot $2$ goes here.
+<img src="img/analysis/Before_and_After_Merge_vs_N.png" />
+
+  We observe that the number of decompositions before and after merging both tend to increase with an increase in the number of vertices. The number of polygons merged, which is the difference between the number of polygons before and after merging, initially increases with increase in number of vertices, and then tends towards a constant. This can be seen from the plot, where the two curves become almost parallel to each other at high enough x-coordinates, indicating that the difference between the y-coordinates tends towards a constant. This implies that for an initial polygon with large number of vertices, the reductions obtained as a result of the merging process tends to be less significant.
+
 
 ### Effect of starting point of decomposition on running time for a fixed number of vertices.
 
