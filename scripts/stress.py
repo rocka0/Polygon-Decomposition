@@ -10,7 +10,7 @@ def run_tests():
     Returns:
         None
     """
-    T = 10
+    T = 1000
 
     system("g++ -std=c++17 src/app.cpp -o app")
 
@@ -30,3 +30,6 @@ def run_tests():
         T -= 1
 
     system("rm ./app input.txt after.txt before.txt")
+
+
+run_tests()
