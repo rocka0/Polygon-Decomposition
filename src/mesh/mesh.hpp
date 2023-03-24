@@ -170,11 +170,8 @@ std::vector<int> Mesh<T>::incidentFaces(Vertex<T>* v) {
     }
 
     e = e->twin->next;
-    int x = 0;
 
     while (e != (v->incident)) {
-        x++;
-        assert(x < 100);
         f = e->right;
 
         if (f) {
