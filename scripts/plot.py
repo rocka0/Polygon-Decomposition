@@ -34,13 +34,14 @@ plt.clf()
 colors = [
     "blueviolet",
     "dodgerblue",
-    "darkkhaki",
-    "lightcoral",
+    "royalblue",
+    "#89c7bc",
+    "green",
+    "#00ad80",
     "hotpink",
     "lawngreen",
-    "royalblue",
+    "lightcoral",
     "orange",
-    "green",
     "saddlebrown",
 ]
 l = len(colors)
