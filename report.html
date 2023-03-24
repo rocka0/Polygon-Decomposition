@@ -18,7 +18,7 @@
                     <ul>
                         <li></li>
                         <li><a href="#introduction">Introduction</a></li>
-                        <li><a href="#dcel-the-what-and-the-how">DCEL: The What and The How</a></li>
+                        <li><a href="#dcel">DCEL</a></li>
                         <li><a href="#plotting-the-outputs">Plotting the outputs</a></li>
                         <li><a href="#writing-a-simple-polygon-generator">Writing a simple polygon generator</a></li>
                         <li><a href="#sample-runs-of-the-code">Sample runs of the code</a></li>
@@ -75,8 +75,17 @@
                 <li>Write a program to visualize the output of the algorithm, i.e, given a simple polygon, output the
                     decomposition produced by the algorithm in a visually intuitive way.</li>
             </ol>
-            <h2 id="dcel-the-what-and-the-how">DCEL: The What and The How</h2>
-            <p>Explain DCEL here</p>
+            <h2 id="dcel">DCEL</h2>
+            <p>A doubly connected edge list, or a <em>DCEL</em>, is an edge-based representation used for planar
+                subdivisions. In our implementation of the <em>DCEL</em>, we have also included vertex and face
+                information, as they give more insights regarding the initial, as well as the decomposed polygons.</p>
+            <p>Formally, a <em>DCEL</em> object consists of lists of :</p>
+            <ul>
+                <li>Vertex objects</li>
+                <li>Half-edge objects</li>
+                <li>Face objects</li>
+            </ul>
+            <p>The <em>DCEL</em> stores the polygons obtained as a result of the decomposition.</p>
             <h2 id="plotting-the-outputs">Plotting the outputs</h2>
             <p><code>plot.py</code> takes the following as <strong>input files</strong>:</p>
             <ul>
@@ -404,17 +413,10 @@
             </blockquote>
             <h3 id="running-time-vs-number-of-vertices-in-the-simple-polygon.">Running time <em>vs</em> Number of
                 vertices in the simple polygon.</h3>
-            <p>Plot <span class="katex--inline"><span class="katex"><span class="katex-mathml"><math
-                                xmlns="http://www.w3.org/1998/Math/MathML">
-                                <semantics>
-                                    <mrow>
-                                        <mn>1</mn>
-                                    </mrow>
-                                    <annotation encoding="application/x-tex">1</annotation>
-                                </semantics>
-                            </math></span><span class="katex-html" aria-hidden="true"><span class="base"><span
-                                    class="strut" style="height: 0.64444em; vertical-align: 0em;"></span><span
-                                    class="mord">1</span></span></span></span></span> goes here.</p>
+            <img src="img/analysis/RunningTime_vs_N.png">
+            <p>We observe that as the number of vertices increases, the running time tends to increase, and the rate of
+                increase is faster than linear. From the nature of the plot and our analysis of the code, we hypothesize
+                that the running time is pseudo-polynomial.</p>
             <h3 id="number-of-decompositions-before-and-after-merging-vs-number-of-vertices-n-in-the-simple-polygon.">
                 Number of Decompositions (Before and After Merging) <em>vs</em> Number of vertices (<span
                     class="katex--inline"><span class="katex"><span class="katex-mathml"><math
@@ -429,17 +431,14 @@
                                     class="strut" style="height: 0.43056em; vertical-align: 0em;"></span><span
                                     class="mord mathnormal">n</span></span></span></span></span>) in the simple polygon.
             </h3>
-            <p>Plot <span class="katex--inline"><span class="katex"><span class="katex-mathml"><math
-                                xmlns="http://www.w3.org/1998/Math/MathML">
-                                <semantics>
-                                    <mrow>
-                                        <mn>2</mn>
-                                    </mrow>
-                                    <annotation encoding="application/x-tex">2</annotation>
-                                </semantics>
-                            </math></span><span class="katex-html" aria-hidden="true"><span class="base"><span
-                                    class="strut" style="height: 0.64444em; vertical-align: 0em;"></span><span
-                                    class="mord">2</span></span></span></span></span> goes here.</p>
+            <img src="img/analysis/Before_and_After_Merge_vs_N.png">
+            <p>We observe that the number of decompositions before and after merging both tend to increase with an
+                increase in the number of vertices. The number of polygons merged, which is the difference between the
+                number of polygons before and after merging, initially increases with increase in number of vertices,
+                and then tends towards a constant. This can be seen from the plot, where the two curves become almost
+                parallel to each other at high enough x-coordinates, indicating that the difference between the
+                y-coordinates tends towards a constant. This implies that for an initial polygon with large number of
+                vertices, the reductions obtained as a result of the merging process tends to be less significant.</p>
             <h3 id="effect-of-starting-point-of-decomposition-on-running-time-for-a-fixed-number-of-vertices.">Effect of
                 starting point of decomposition on running time for a fixed number of vertices.</h3>
             <p>We compare the various outputs obtained on the following polygon depending on the starting point of our
