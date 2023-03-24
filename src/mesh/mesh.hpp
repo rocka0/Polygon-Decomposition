@@ -22,9 +22,25 @@
 template <typename T>
 class Mesh {
 public:
+
+    /**
+     * A list of Vertex pointers corresponding to vertices in the Mesh.
+    */
     std::vector<Vertex<T>*> vertices;
+    
+    /**
+     * A list of Edge pointers corresponding to edges in the Mesh.
+    */
     std::vector<Edge<T>*> edges;
+    
+    /**
+     * A list of Face pointers corresponding to faces in the Mesh.
+    */
     std::vector<Face<T>*> faces;
+    
+    /**
+     * A lookup map for Point objects, storing the id of the Vertex object corresponding to each Point.
+    */
     std::map<Point<T>, int> lookup;
 
     Edge<T>* addEdgeToFace(Edge<T>*, Vertex<T>*);
