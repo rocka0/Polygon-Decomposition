@@ -22,7 +22,7 @@
 using namespace std;
 
 ///< Datatype of the coordinates of the point
-typedef int ptype;
+typedef long double ptype;
 typedef Point<ptype> point;
 typedef Polygon<ptype> polygon;
 typedef polygon::vptr vptr;
